@@ -331,6 +331,11 @@ class LoadingButton @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     fun hide() {
+
+        if (visibility == View.GONE && scaleX == 0f && scaleY == 0f) {
+            return
+        }
+
         visibility = View.VISIBLE
         scaleX = 1f
         scaleY = 1f
@@ -341,6 +346,11 @@ class LoadingButton @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     fun show() {
+
+        if (visibility == View.VISIBLE && scaleX == 1f && scaleY == 1f) {
+            return
+        }
+
         visibility = View.VISIBLE
         scaleX = 0f
         scaleY = 0f
