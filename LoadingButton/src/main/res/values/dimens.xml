@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="defaultStrokeWidth">4dp</dimen>
+    <dimen name="defaultCornerRadius">6dp</dimen>
+    <dimen name="defaultFontSize">14sp</dimen>
+</resources>
