@@ -331,13 +331,23 @@ class LoadingButton @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     fun hide() {
+        visibility = View.VISIBLE
+        scaleX = 1f
+        scaleY = 1f
         clearAnimation()
-        animate().scaleY(0f).scaleX(0f).setDuration(300).interpolator = AnticipateInterpolator()
+        animate().scaleY(0f).scaleX(0f).setDuration(400).withEndAction {
+            visibility = View.GONE
+        }.interpolator = AnticipateInterpolator()
     }
 
     fun show() {
+        visibility = View.VISIBLE
+        scaleX = 0f
+        scaleY = 0f
         clearAnimation()
-        animate().scaleY(1f).scaleX(1f).setDuration(400).interpolator = OvershootInterpolator()
+        animate().scaleY(1f).scaleX(1f).setDuration(300).withEndAction {
+            visibility = View.VISIBLE
+        }.interpolator = OvershootInterpolator()
     }
 
     private fun pxFromDp(context: Context, dp: Float): Float {
