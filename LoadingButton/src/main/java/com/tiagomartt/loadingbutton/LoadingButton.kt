@@ -191,7 +191,7 @@ class LoadingButton @JvmOverloads constructor(context: Context, attrs: Attribute
 
         if (imageSrcId != 0) binding.imageView.setImageResource(imageSrcId)
 
-        binding.imageView.imageTintList = ColorStateList.valueOf(imageTint)
+        if (imageTint != 0) binding.imageView.imageTintList = ColorStateList.valueOf(imageTint)
     }
 
     private fun refreshState() {
