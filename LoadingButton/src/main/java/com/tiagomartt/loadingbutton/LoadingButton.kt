@@ -5,14 +5,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -68,9 +66,13 @@ class LoadingButton @JvmOverloads constructor(context: Context, attrs: Attribute
     private lateinit var stateListDrawable: StateListDrawable
     private lateinit var rippleDrawable: RippleDrawable
 
+    private var originalAlpha = 0f
+
     init {
 
         isSaveEnabled = true
+
+        originalAlpha = alpha
 
         attrs?.let {
 
@@ -210,14 +212,14 @@ class LoadingButton @JvmOverloads constructor(context: Context, attrs: Attribute
 
         if (loadingButtonState == LoadingButtonState.Loading) {
 
-            val va = ValueAnimator.ofFloat(alpha, 0.75f)
+            val va = ValueAnimator.ofFloat(alpha, (originalAlpha / 100f) * 71f)
             va.duration = 100
             va.addUpdateListener { animation -> alpha = animation.animatedValue as Float }
             va.start()
 
         } else if (loadingButtonState == LoadingButtonState.Normal) {
 
-            val va = ValueAnimator.ofFloat(alpha, 1.0f)
+            val va = ValueAnimator.ofFloat(alpha, originalAlpha)
             va.duration = 100
             va.addUpdateListener { animation -> alpha = animation.animatedValue as Float }
             va.start()
@@ -389,6 +391,8 @@ class LoadingButton @JvmOverloads constructor(context: Context, attrs: Attribute
         bundle.putInt("imageSrcId", imageSrcId)
         bundle.putInt("imageTint", imageTint)
 
+        bundle.putFloat("originalAlpha", originalAlpha)
+
         bundle.putParcelable("superState", super.onSaveInstanceState())
         return bundle
     }
@@ -448,6 +452,8 @@ class LoadingButton @JvmOverloads constructor(context: Context, attrs: Attribute
 
             imageSrcId = viewState.getInt("imageSrcId")
             imageTint = viewState.getInt("imageTint")
+
+            originalAlpha = viewState.getFloat("originalAlpha")
 
             viewState = viewState.getParcelable("superState")
         }
