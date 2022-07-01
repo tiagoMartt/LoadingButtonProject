@@ -141,6 +141,18 @@ class LoadingButton @JvmOverloads constructor(context: Context, attrs: Attribute
 
             imageTint = attributes.getColor(R.styleable.LoadingButton_imageTint, 0)
 
+            when (attributes.getInt(R.styleable.LoadingButton_state, 1)) {
+                1 -> {
+                    loadingButtonState = LoadingButtonState.Normal
+                }
+                2 -> {
+                    loadingButtonState = LoadingButtonState.Loading
+                }
+                3 -> {
+                    loadingButtonState = LoadingButtonState.Disabled
+                }
+            }
+
             attributes.recycle()
         }
 
@@ -210,23 +222,55 @@ class LoadingButton @JvmOverloads constructor(context: Context, attrs: Attribute
 
         binding.imageView.visibility = loadingButtonState.imageViewVisibility
 
+        when (loadingButtonState) {
+
+            LoadingButtonState.Loading -> {
+
+                val va = ValueAnimator.ofFloat(alpha, (originalAlpha / 100f) * 71f)
+                va.duration = 100
+                va.addUpdateListener { animation -> alpha = animation.animatedValue as Float }
+                va.start()
+
+            }
+
+            LoadingButtonState.Normal -> {
+
+                val va = ValueAnimator.ofFloat(alpha, originalAlpha)
+                va.duration = 100
+                va.addUpdateListener { animation -> alpha = animation.animatedValue as Float }
+                va.start()
+
+            }
+
+            LoadingButtonState.Disabled -> {
+
+                val va = ValueAnimator.ofFloat(alpha, (originalAlpha / 100f) * 71f)
+                va.duration = 100
+                va.addUpdateListener { animation -> alpha = animation.animatedValue as Float }
+                va.start()
+            }
+        }
+    }
+
+    fun setDisabled(disabled: Boolean) {
+
         if (loadingButtonState == LoadingButtonState.Loading) {
+            return
+        }
 
-            val va = ValueAnimator.ofFloat(alpha, (originalAlpha / 100f) * 71f)
-            va.duration = 100
-            va.addUpdateListener { animation -> alpha = animation.animatedValue as Float }
-            va.start()
-
-        } else if (loadingButtonState == LoadingButtonState.Normal) {
-
-            val va = ValueAnimator.ofFloat(alpha, originalAlpha)
-            va.duration = 100
-            va.addUpdateListener { animation -> alpha = animation.animatedValue as Float }
-            va.start()
+        loadingButtonState = if (disabled) {
+            LoadingButtonState.Disabled
+        } else {
+            LoadingButtonState.Normal
         }
     }
 
     fun setLoading(l: Boolean) {
+
+        if (loadingButtonState == LoadingButtonState.Disabled) {
+            return
+        }
+
         loadingButtonState = if (l) {
             LoadingButtonState.Loading
         } else {
@@ -511,5 +555,6 @@ class LoadingButton @JvmOverloads constructor(context: Context, attrs: Attribute
     private sealed class LoadingButtonState(val isEnabled: Boolean, val progressBarVisibility: Int, val textViewVisibility: Int, val imageViewVisibility: Int) : Serializable {
         object Normal : LoadingButtonState(true, View.GONE, View.VISIBLE, View.VISIBLE)
         object Loading : LoadingButtonState(false, View.VISIBLE, View.INVISIBLE, View.INVISIBLE)
+        object Disabled : LoadingButtonState(false, View.INVISIBLE, View.VISIBLE, View.VISIBLE)
     }
 }
